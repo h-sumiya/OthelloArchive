@@ -1,4 +1,4 @@
-//https://qiita.com/watergreat31/items/09f114799319c7ba19dc
+//参考:https://qiita.com/watergreat31/items/09f114799319c7ba19dc
 
 /*
 左右用

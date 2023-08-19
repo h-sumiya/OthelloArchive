@@ -2,6 +2,16 @@
 pub const HORIZONTAL: u64 = 0x7E7E7E7E7E7E7E7E;
 pub const VERTICAL: u64 = 0x00FFFFFFFFFFFF00;
 pub const DIAGONAL: u64 = 0x007E7E7E7E7E7E00;
+pub const ABSOLUTE_TABLE: [usize; 256] = [
+    0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5,
+    0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 6,
+    0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5,
+    0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 7,
+    1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 6,
+    1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1, 7,
+    2, 3, 2, 4, 2, 3, 2, 5, 2, 3, 2, 4, 2, 3, 2, 6, 2, 3, 2, 4, 2, 3, 2, 5, 2, 3, 2, 4, 2, 3, 2, 7,
+    3, 4, 3, 5, 3, 4, 3, 6, 3, 4, 3, 5, 3, 4, 3, 7, 4, 5, 4, 6, 4, 5, 4, 7, 5, 6, 5, 7, 6, 7, 7, 8,
+];
 
 macro_rules! check_direction {
     ($mask:expr, $player:expr,  >>  $offset:expr , $res:expr ,$blank:expr) => {
@@ -70,7 +80,7 @@ fn main() {
     go_to_dustbox(&mut buf);
 
     loop {
-        let board = Board::from_stdin(player);
+        let mut board = Board::from_stdin(player);
         {
             io::stdin().read_line(&mut buf).unwrap();
             let action_count = parse_input!(buf, usize);
@@ -174,9 +184,13 @@ impl Board {
         }
     }
 
-    fn next(&mut self) {
+    fn change_turn(&mut self) {
         self.turn = self.turn.opponent();
         (self.player, self.opponent) = (self.opponent, self.player);
+    }
+
+    fn next(&mut self) {
+        self.change_turn();
         self.progress += 1;
     }
 
@@ -222,11 +236,91 @@ impl Board {
         self.opponent ^= reverse;
     }
 
-    fn score(&self) -> isize {
-        (self.player.count_ones() - self.opponent.count_ones()) as isize
+    fn count_stone(&self) -> isize {
+        self.player.count_ones() as isize - self.opponent.count_ones() as isize
     }
 
-    fn ai(&self) -> u64 {
+    fn count_option(&mut self) -> isize {
+        let player = self.valid_moves().count_ones() as isize;
+        self.change_turn();
+        let opponent = self.valid_moves().count_ones() as isize;
+        self.change_turn();
+        player - opponent
+    }
+
+    fn absolute_score(v: u64) -> isize {
+        //参考:https://qiita.com/ysuzuk81/items/9ee9d0a295471bb6d1ef#%E6%84%9F%E6%83%B3
+        let mut count = 0;
+
+        count += unsafe { ABSOLUTE_TABLE.get_unchecked((v & 0xFF) as usize) };
+        count += unsafe { ABSOLUTE_TABLE.get_unchecked((v >> 56) as usize) };
+        count += unsafe {
+            ABSOLUTE_TABLE
+                .get_unchecked((((v & 0x0101010101010101) * 0x0102040810204080) >> 56) as usize)
+        };
+        count += unsafe {
+            ABSOLUTE_TABLE
+                .get_unchecked((((v & 0x8080808080808080) * 0x0002040810204081) >> 56) as usize)
+        };
+        count as isize
+    }
+
+    fn count_absolute(&self) -> isize {
+        Self::absolute_score(self.player) - Self::absolute_score(self.opponent)
+    }
+
+    fn shape_score(v: u64) -> isize {
+        let mut score = 0;
+
+        let kado = 0x8100000000000081 & !v;
+        let mut dangerous = 0;
+
+        let masked = v & HORIZONTAL;
+        dangerous += ((masked << 1) & kado).count_ones() as isize;
+        dangerous += ((masked >> 1) & kado).count_ones() as isize;
+
+        let masked = v & VERTICAL;
+        dangerous += ((masked << 8) & kado).count_ones() as isize;
+        dangerous += ((masked >> 8) & kado).count_ones() as isize;
+
+        let masked = v & DIAGONAL;
+        dangerous += ((masked << 9) & kado).count_ones() as isize;
+        dangerous += ((masked >> 9) & kado).count_ones() as isize;
+        dangerous += ((masked << 7) & kado).count_ones() as isize;
+        dangerous += ((masked >> 7) & kado).count_ones() as isize;
+
+        score += dangerous * -5;
+
+        let mut safe = 0;
+
+        let masked = v & 0x3C3C3C3C3C3C3C3C;
+        safe += ((masked << 2) & kado).count_ones() as isize;
+        safe += ((masked >> 2) & kado).count_ones() as isize;
+
+        let masked = v & 0x0000FFFFFFFF0000;
+        safe += ((masked << 16) & kado).count_ones() as isize;
+        safe += ((masked >> 16) & kado).count_ones() as isize;
+
+        let masked = v & 0x00003C3C3C3C0000;
+        safe += ((masked << 18) & kado).count_ones() as isize;
+        safe += ((masked >> 18) & kado).count_ones() as isize;
+        safe += ((masked << 14) & kado).count_ones() as isize;
+        safe += ((masked >> 14) & kado).count_ones() as isize;
+
+        score += safe;
+
+        score
+    }
+
+    fn stone_shape(&self) -> isize {
+        Self::shape_score(self.player) - Self::shape_score(self.opponent)
+    }
+
+    fn score(&mut self) -> isize {
+        self.count_absolute() * 10 + self.stone_shape() + self.count_option() * 4
+    }
+
+    fn ai(&mut self) -> u64 {
         let mut max_score = -64;
         let valid_moves = self.valid_moves();
         let mut best_move = 0;
@@ -235,7 +329,7 @@ impl Board {
             if valid_moves & pos != 0 {
                 let mut board = (*self).clone();
                 board.put(pos);
-                let score = board.score();
+                let score = self.count_option();
                 if score > max_score {
                     max_score = score;
                     best_move = pos;
