@@ -1,8 +1,12 @@
-# Svelte + Vite
+# BitBoardEditor
 
-This template should help get you started developing with Tauri and Svelte in Vite.
+オセロのビットボードをGUIで編集
 
-## Recommended IDE Setup
+## Download
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+[EXE](https://github.com/h-sumiya/BitBoardEditor/releases/tag/v0.0.0)
 
+## Build
+
+1. `npm run install`
+2. `npm run tauri build`
