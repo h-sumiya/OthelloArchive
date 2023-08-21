@@ -3,7 +3,11 @@ from pathlib import Path
 import pyperclip
 import sys
 
-debug = sys.argv[1] != "build"
+debug = True
+try:
+    debug = sys.argv[1] != "build"
+except:
+    pass
 
 APP = Path(__file__).parent
 DIST = APP / 'dist'
@@ -26,7 +30,7 @@ def replace(text: str, template: dict):
         if not debug and "python:debug" in line:
             continue
         elif "python:replace" in line:
-            text = line.split("python:replace")[1]
+            text = line.split("python:replace")[1].strip()
             for key in template.keys():
                 text = text.replace(key, template[key])
             res += text + "\n"
