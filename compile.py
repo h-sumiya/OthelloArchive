@@ -1,8 +1,9 @@
 import re
 from pathlib import Path
 import pyperclip
+import sys
 
-debug = True
+debug = sys.argv[1] != "build"
 
 APP = Path(__file__).parent
 DIST = APP / 'dist'
@@ -22,6 +23,8 @@ def replace(text: str, template: dict):
     for line in text.splitlines():
         if "python:del" in line:
             continue
+        if not debug and "python:debug" in line:
+            continue
         elif "python:replace" in line:
             text = line.split("python:replace")[1]
             for key in template.keys():
@@ -36,8 +39,8 @@ def replace(text: str, template: dict):
 def del_comment(text: str):
     res = ""
     for line in text.splitlines():
-        if "\\\\" in line:
-            res += line.split("\\\\")[0] + "\n"
+        if r"//" in line:
+            res += line.split(r"//")[0] + "\n"
         else:
             res += line + "\n"
     return res
@@ -45,6 +48,8 @@ def del_comment(text: str):
 
 for key in template.keys():
     template[key] = replace(template[key], template)
+    if not debug:
+        template[key] = del_comment(template[key])
 
 text = replace(text, template)
 if not debug:
@@ -53,5 +58,5 @@ if not debug:
     text = re.sub(r' +', ' ', text)
 
 (DIST / 'main.rs').write_text(text, encoding='utf-8')
-
+print(f"compile: {len(text)} bytes")
 pyperclip.copy(text)

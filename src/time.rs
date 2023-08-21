@@ -16,6 +16,7 @@ impl TimeManager {
 
     pub fn lap(&mut self) -> Result<(), ()> {
         let elapsed = self.start.elapsed().as_millis();
+        eprintln!("elapsed: {}", elapsed);
         let diff = elapsed - self.last;
         if elapsed + diff > LiMIT_TIME {
             return Err(());

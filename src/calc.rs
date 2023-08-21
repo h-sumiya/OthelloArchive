@@ -115,6 +115,18 @@ impl Board {
         self.me.count_ones() as isize - self.opp.count_ones() as isize
     }
 
+    pub fn win(&self) -> isize {
+        let me = self.me.count_ones() as isize;
+        let opp = self.opp.count_ones() as isize;
+        if me > opp {
+            return 1;
+        } else if me < opp {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
     pub fn cn(&self) -> isize {
         let me = self.legal_moves().count_ones() as isize;
         let opp = self.opp_legal_moves().count_ones() as isize;
@@ -151,9 +163,5 @@ impl Board {
                 .get_unchecked(get_right_edge(self.opp));
         }
         score as isize
-    }
-
-    pub fn score(&self) -> isize {
-        self.cn() * 20 + self.bp() * 2 + self.fs() * 75
     }
 }

@@ -1,5 +1,6 @@
 use std::fmt; //python:del
 
+#[derive(PartialEq, Eq)]
 pub struct Pos(pub u64);
 
 impl Pos {
