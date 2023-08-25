@@ -18,8 +18,8 @@ template = {}
 for file in files:
     template[f"{{{file.name}}}"] = file.read_text(encoding='utf-8')
 
-text: str = template['{main.rs}']
-del template['{main.rs}']
+text: str = template['{root.rs}']
+del template['{root.rs}']
 
 
 def replace(text: str, template: dict):

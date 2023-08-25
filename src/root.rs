@@ -1,14 +1,13 @@
-mod base; 
-mod pos; 
-mod read; 
-mod mask; 
-mod database; 
-mod time; 
-mod calc; 
-mod ai; 
-
-use base::Board; 
-use read::{read_id, read_line, skip_after};
+// python:replace use std::fmt;
+// python:replace use std::io;
+//python:replace {base.rs}
+//python:replace {pos.rs}
+//python:replace {read.rs}
+//python:replace {mask.rs}
+//python:replace {database.rs}
+//python:replace {time.rs}
+//python:replace {calc.rs}
+//python:replace {ai.rs}
 
 fn main() {
     let mut buf = String::new();
