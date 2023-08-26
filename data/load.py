@@ -1,7 +1,12 @@
-from .base import Board, Color, Pos
+from .base import Board, Color
 import struct
 from pathlib import Path
 from dataclasses import dataclass
+from io import BytesIO
+from tqdm import trange, tqdm
+from torch import tensor
+import torch
+from torch.utils.data import TensorDataset
 
 
 @dataclass
@@ -10,21 +15,24 @@ class Data:
     opp: Board
     score: float
     cn: int
+    board: Board | None = None
 
-    def load(data: bytes) -> 'Data':
+    def load(stream: BytesIO) -> 'Data':
         return Data(
-            Board.load(data[0:8], Color.Black),
-            Board.load(data[8:16], Color.White),
-            struct.unpack('d', data[16:24]),
-            int.from_bytes(data[24:32], byteorder='little', signed=True)
+            Board.load(stream.read(8), Color.Black),
+            Board.load(stream.read(8), Color.White),
+            struct.unpack('d', stream.read(8)),
+            int.from_bytes(stream.read(8), byteorder='little', signed=True)
         )
 
-    def load_reverse(data: bytes) -> 'Data':
+    def load_reverse(stream: BytesIO) -> 'Data':
+        white = Board.load(stream.read(8), Color.White)
+        black = Board.load(stream.read(8), Color.Black)
         return Data(
-            Board.load(data[8:16], Color.Black),
-            Board.load(data[0:8], Color.White),
-            - struct.unpack('d', data[16:24]),
-            - int.from_bytes(data[24:32], byteorder='little', signed=True)
+            black,
+            white,
+            - struct.unpack('d', stream.read(8)),
+            - int.from_bytes(stream.read(8), byteorder='little', signed=True)
         )
 
     def __str__(self) -> str:
@@ -38,7 +46,9 @@ class Data:
             return [Data.to_val(color) for color in colors]
 
     def read(self, indexes) -> any:
-        data = (self.me + self.opp)[indexes]
+        if self.board is None:
+            self.board = self.me + self.opp
+        data = self.board[indexes]
         return Data.to_val(data)
 
     def __getitem__(self, index) -> any:
@@ -74,12 +84,15 @@ class Datas:
         else:
             size = min(size, len(data) // 32)
         res = []
+        stream = BytesIO(data)
+        pbar = trange(size)
+        pbar.set_description("Unpacking Data...")
         if reverse:
-            for i in range(size):
-                res.append(Data.load_reverse(data[i*32:(i+1)*32]))
+            for _ in pbar:
+                res.append(Data.load_reverse(stream.read(32)))
         else:
-            for i in range(size):
-                res.append(Data.load(data[i*32:(i+1)*32]))
+            for _ in pbar:
+                res.append(Data.load(stream))
 
         return Datas(res)
 
@@ -108,3 +121,27 @@ class Datas:
                 raise StopIteration()
             self.index += 1
             return self.datas[self.index - 1]
+
+    def to_dataset(self, indexes, to_tensor=True, to_dataset=True) -> any:
+        datas = []
+        cns = []
+        scores = []
+        for i, index in enumerate(indexes):
+            pbar = tqdm(self)
+            pbar.set_description(f"Converting Data{i}...")
+            index_data = []
+            for data in pbar:
+                index_data.append(data[index])
+            datas.append(index_data)
+        pbar = tqdm(self)
+        pbar.set_description("Converting CN and Score...")
+        for data in pbar:
+            cns.append([data.cn])
+            scores.append(data.score)
+        if to_tensor:
+            datas = [tensor(data, dtype=torch.float32) for data in datas]
+            cns = tensor(cns, dtype=torch.float32)
+            scores = tensor(scores, dtype=torch.float32)
+            if to_dataset:
+                return TensorDataset(*datas, cns, scores)
+        return datas, cns, scores

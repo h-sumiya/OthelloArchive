@@ -1,6 +1,8 @@
 from .moves import MIROR_TABLE, ROTATE_TABLE
 from dataclasses import dataclass
 from enum import Enum
+from copy import copy
+from numba import jit
 
 
 X_LABEL = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -77,6 +79,14 @@ class Color(Enum):
         else:
             return -1
 
+    def from_int(val: int) -> 'Color':
+        if val == 0:
+            return Color.Null
+        elif val == 1:
+            return Color.Black
+        else:
+            return Color.White
+
     @property
     def flag(self) -> int:
         return 0 if self == Color.Null else 1
@@ -115,14 +125,8 @@ class Board:
         return text
 
     def __add__(self, other: 'Board') -> 'Board':
-        l = []
-        for i in range(64):
-            if self[i] == Color.Null and other[i] == Color.Null:
-                l.append(Color.Null)
-            elif self[i] == Color.Null and other[i] != Color.Null:
-                l.append(other[i])
-            elif self[i] != Color.Null and other[i] == Color.Null:
-                l.append(self[i])
-            else:
-                raise Exception("Invalid BitBoard")
+        l = [
+            self[i] if self[i] != Color.Null else other[i]
+            for i in range(64)
+        ]
         return Board(l)
