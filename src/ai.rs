@@ -8,11 +8,11 @@ const MAX: isize = 10000;
 
 macro_rules! arufa_beta {
     ($self:expr,$depth:expr,$func:tt) => {{
-        let moves = $self.legal_moves();
+        let moves = unsafe { $self.legal_moves() };
         let mut scores = vec![];
         for pos in POSES {
             if moves & pos != 0 {
-                let board = $self.put(Pos(pos));
+                let board = unsafe { $self.put(Pos(pos)) };
                 let score = -board.$func(2, MIN, MAX);
                 scores.push((score, pos));
             }
@@ -21,7 +21,7 @@ macro_rules! arufa_beta {
         let mut max = MIN;
         let mut max_pos = 0;
         for (_, pos) in scores {
-            let board = $self.put(Pos(pos));
+            let board = unsafe { $self.put(Pos(pos)) };
             let score = -board.$func($depth - 1, MIN, -max);
             if score > max {
                 max = score;
@@ -37,9 +37,9 @@ macro_rules! arufa_beta_node {
         if $depth == 0 {
             return $self.$score_func();
         }
-        let mut moves = $self.legal_moves();
+        let mut moves = unsafe { $self.legal_moves() };
         if moves == 0 {
-            moves = $self.opp_legal_moves();
+            moves = unsafe { $self.opp_legal_moves() };
             if moves == 0 {
                 return $self.$score_func();
             }
@@ -48,7 +48,7 @@ macro_rules! arufa_beta_node {
 
         for pos in POSES {
             if moves & pos != 0 {
-                let board = $self.put(Pos(pos));
+                let board = unsafe { $self.put(Pos(pos)) };
                 let score = -board.$func($depth - 1, -$b, -$a);
                 $a = $a.max(score);
                 if $a >= $b {
@@ -66,11 +66,11 @@ impl Board {
         let remain = self.remain();
         let mut tm = TimeManager::new(); //python:debug
         let pos;
-        if remain > 14 {
+        if remain > 15 {
             eprintln!("score"); //python:debug
             pos = self.ab_score(7);
             tm.lap(); //python:debug
-        } else if remain > 12 {
+        } else if remain > 13 {
             eprintln!("win"); //python:debug
             pos = self.ab_win(remain);
             tm.lap(); //python:debug

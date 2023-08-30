@@ -1,10 +1,12 @@
 // python:replace use std::fmt;
 // python:replace use std::io;
-//python:replace {base.rs}
+// python:replace use std::mem::transmute;
+// python:replace use std::arch::x86_64::*;
+//python:replace {data.rs}
 //python:replace {pos.rs}
+//python:replace {base.rs}
 //python:replace {read.rs}
 //python:replace {mask.rs}
-//python:replace {database.rs}
 //python:replace {time.rs}
 //python:replace {calc.rs}
 //python:replace {ai.rs}

@@ -128,9 +128,11 @@ impl Board {
     }
 
     pub fn cn(&self) -> isize {
-        let me = self.legal_moves().count_ones() as isize;
-        let opp = self.opp_legal_moves().count_ones() as isize;
-        me - opp
+        unsafe {
+            let me = self.legal_moves().count_ones() as isize;
+            let opp = self.opp_legal_moves().count_ones() as isize;
+            me - opp
+        }
     }
 
     pub fn bp(&self) -> isize {

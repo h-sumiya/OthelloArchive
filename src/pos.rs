@@ -1,6 +1,6 @@
 use std::fmt; //python:del
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct Pos(pub u64);
 const LABEL_X: [char; 8] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const LABEL_Y: [char; 8] = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -19,6 +19,9 @@ impl Pos {
         let x = chars.next().unwrap() as u8 - b'a';
         let y = chars.next().unwrap() as u8 - b'1';
         Pos::new(x, y)
+    }
+    pub fn idx(&self) -> usize {
+        63 - self.0.leading_zeros() as usize
     }
 }
 
