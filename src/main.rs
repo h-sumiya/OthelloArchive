@@ -9,6 +9,7 @@ mod read;
 mod time;
 mod display;
 mod score;
+mod run_score;
 
 use base::Board;
 
@@ -28,4 +29,6 @@ fn main() {
             println!("{}", board.pass());   
         }
     }
+    score::temp();
+    run_score::temp();
 }

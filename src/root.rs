@@ -7,6 +7,7 @@
 //python:replace {base.rs}
 //python:replace {read.rs}
 //python:replace {mask.rs}
+//python:replace {score.rs}
 //python:replace {time.rs}
 //python:replace {calc.rs}
 //python:replace {ai.rs}
