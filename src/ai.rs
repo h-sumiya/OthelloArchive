@@ -62,20 +62,21 @@ macro_rules! arufa_beta_node {
 
 impl Board {
     pub fn ai(&self) -> Pos {
+        println!("======ai=================");
         eprintln!("score: {}", self.score()); //python:debug
         let remain = self.remain();
         let mut tm = TimeManager::new(); //python:debug
         let pos;
         if remain > 15 {
-            eprintln!("score"); //python:debug
+            eprintln!("mode score"); //python:debug
             pos = self.ab_score(7);
             tm.lap(); //python:debug
         } else if remain > 13 {
-            eprintln!("win"); //python:debug
+            eprintln!("mode win"); //python:debug
             pos = self.ab_win(remain);
             tm.lap(); //python:debug
         } else {
-            eprintln!("kn"); //python:debug
+            eprintln!("mode kn"); //python:debug
             pos = self.ab_kn(remain);
             tm.lap(); //python:debug
         }
@@ -109,8 +110,4 @@ impl Board {
     pub fn ab_win_node(&self, depth: usize, mut a: isize, b: isize) -> isize {
         arufa_beta_node!(self, depth, a, b, ab_win_node, win)
     }
-}
-
-impl Board {
-    fn ai_v2() {}
 }

@@ -2,7 +2,9 @@
 // python:replace use std::io;
 // python:replace use std::mem::transmute;
 // python:replace use std::arch::x86_64::*;
+// python:replace use std::ops;
 //python:replace {data.rs}
+//python:replace {bin.rs}
 //python:replace {pos.rs}
 //python:replace {base.rs}
 //python:replace {read.rs}
@@ -13,6 +15,7 @@
 //python:replace {ai.rs}
 
 fn main() {
+    first_load();
     let mut buf = String::new();
     let id = read_id(&mut buf);
     let mut board = Board::new();

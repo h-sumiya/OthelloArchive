@@ -1,10 +1,12 @@
 #[macro_use]
 mod data;
 mod ai;
+mod ai2;
 mod base;
+mod bin;
 mod calc;
 mod calc2;
-mod display;
+mod disp;
 mod mask;
 mod pos;
 mod read;
@@ -12,24 +14,69 @@ mod score;
 mod time;
 
 use base::Board;
+use calc2::set_default_score;
+
+fn score() {
+    loop {
+        let mut data = String::new();
+        std::io::stdin().read_line(&mut data).unwrap();
+        let mut board = Board::new();
+        board.push(&data.trim(), '1');
+        data.clear();
+        std::io::stdin().read_line(&mut data).unwrap();
+        let prof = data.trim().parse::<usize>().unwrap();
+        set_default_score(prof);
+        println!("{}", unsafe { board.defalut_score() });
+    }
+}
 
 fn main() {
-    score::temp();
-}
-fn sub() {
-    let test_data = "e6f4g3d6c5c6c4f6d7e8b6e3f3c7d3b5a6b3f5b4f7g5g4c3c8d8f8e7b8h4h6h5h3g6h7a5b7g7c2d1c1e2e1d2f2f1g2b1a4a3a2h2h1g1a1b2g8h8a8a7";
+    let start = std::time::Instant::now();
+    calc2::first_load();
+    calc2::set_default_score(0);
+    println!("load time: {}ms", start.elapsed().as_millis());
     let mut board = Board::new();
-    let mut stream = vec![];
-    for i in (0..test_data.len()).step_by(2) {
-        let pos = pos::Pos::from_str(&test_data[i..i + 2]);
+    let mut turn = false;
+    let vs = false;
+    loop {
         unsafe {
-            board = board.put(pos);
+            if board.legal_moves() == 0 {
+                board = board.pass();
+                if board.legal_moves() == 0 {
+                    break;
+                }
+                turn = !turn;
+            }
         }
-        stream.push((board.me, board.opp));
-        if i % 4 == 0 {
-            println!("{}", board);
+        let pos;
+        if turn {
+            pos = board.ai();
+            println!("ai: {}", pos);
         } else {
-            println!("{}", board.pass());
+            println!("{}", board);
+            if vs {
+                loop {
+                    let mut buf = String::new();
+                    std::io::stdin().read_line(&mut buf).unwrap();
+                    if let Ok(p) = pos::Pos::from_str(&buf) {
+                        if p.0 & unsafe { board.legal_moves() } != 0 {
+                            pos = p;
+                            break;
+                        }
+                    }
+                    println!("invalid input");
+                }
+            } else {
+                pos = board.ai2();
+                println!("ai2: {}", pos);
+            }
         }
+        board = unsafe { board.put(pos) };
+        turn = !turn;
     }
+    if !turn {
+        board = board.pass();
+    }
+    println!("end\n{}", board);
+    println!("score: {}", board.kn());
 }

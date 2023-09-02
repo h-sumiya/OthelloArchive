@@ -1,10 +1,8 @@
-pub const TESTDATA:[f32; 617] = include_data!(2468, "쥿瀭渤񂡆Ｋ񁊁ﹰ륊澈贱瀣晾ﶃ썶ﺶﺬ鮵ﴕ赥湅䜣浉澮澾澠粩ﲈ񂹲浩썕ﶇ洼䓙￷ꔳ洐脥澵嵸﹩켃泒妪浥񀦙ﺖ贠澆񁒻ﻐ㾹ﻍ񀙳澦񂣝ﺳ峳灧񁯽澺񂅝澓闚ﾙ攷溅񀯮灟񁹪ﶉ񂘗［僚ﹳ﶐龅ﾖ뗆ﾲ񀧊ﻜ񀨉ｸ䜏欼鋪ｖ렼ﳥꆡ澰񀒉泠䑕︇䊇湼겥ａﺔ爬洩瓮渑䎔濫だﺋ咚濪ꍅﺧ񂒙ﹳ漷񀆬滂詩澆魯潴䟿澂솹溯񁊁﹐񂢜ﴁﻊ㞆︋犱񀀞񁅰漗楨溷挐ﶽ䁝漄񀃓񂅬演쵆ﶭ쳺ﰬ񀬫漙끁潂ꟓ﹜ﵻﴌ辈Ｙ䔕瀈񁬄漚慗湧舝祿빜澗渁氝ꭄﺭ﹘麞￫緃ￒ񀃸ﴪ䘩ﺍ񂌁沶ꝇ澂阹濡񂅐ﴓ嶠濍䴷漤遝澟綩漾񂸴濙뜕漱衖濦䱖漝񂐗ﰐ񃘘滅ꭟ＃ꑘﻡ񀩜ﾢﾻ澒竔漱滙袿潶眤ﻸ伵漕潳瘉漽뭭潰羠ﺚ񂄲潆螖ﺆ񀐜ｱ밈渮１娣０墍潹憿潮񂀎漲䟵潿񂌛︦砖漌묻񀀍謫渲񀀕񃐢滍񁕺ﺢ񃥘湪鮭渲񃟈ﾺ뜳漧鄺￳ﰇ湃橾溾񀸥漆㪀澂賯滎㸖澀见渎颇溂戙渔愢ﴁ雫漫䈝񀀭溙뎴ﻛ先澻荠ﹼ㭹滌񁺬渓竈ﾪ煸潤񀴼／꬜ﺼ潊﹚񂅹ﴂ봩Ｂ䨳ﲾ꘢︫䴵洒ꟽﾽ曗滞澝䏍ﶩ潫袐񀇂캔漶蔐ｨ귁ﷷ뻆澞卒浊됒ﷅ堸漱񁂉ｇ鴌浶񁥣满藊滐ꌷ澬䧶澫쥰洞暹溢㟍ﾂ蟅ﾂ괰涫潘巁񀀊丕漣񁱆渹﹬񁔲ￅ񂝋濂㝭溂涓ｽ㠜滢溺潡񀊿濞񁁨溘￮㴧濡ꓐ滥颊澿鬱񀁨䪊澝뎁渏񂇈澐񁉂ﾌ䪶溗䖀澄軂ｪ櫎漋鶇潇ひ瀍徉６潛ﰚ潭䜠３񃪸񀅎毀：ꑁﳅﳁ񀀃䭓񀂪ﵫ涐띗渚嵇︐񃲖ﻻ鏎ﾯ셌񀀖觀ﾢ㼪ﻫ䗕ﵷ񀂇񀃏񀪇渚񀏦ﶇ񀎺ﵓ쾁ﲔ袠流延񀂨匴渀恥渭辊溺񃣟ｙ񂥨漡泺㶒ﳳ㚹溰䥼烣񁻵񀂆暴涧Ｗ汮葺ﾙ젙񀀃攪涀涖嘜ﴡ삎ﻵ䖱񀀄񃘶澧񂗰涬񁅆溂隈񀁗뵘渣񁺪渤뮕榾糠瀠促沃䶘瀋񂴇漞񀫬ﶽ㛭ﻳ晻ￅ外񀁜꧔溌쥝ﺆ䰐﷘񁘃ﾱ峣灋񃍭洣񀺔ﶢ䴱ﴋ椺￰ﴇ瀘񃨝﹙漶ﺣ釁澚慥炗秋灋񃷣漽㌫滊䵩񀀚瀯㝌漈쩿ﶟ񃉽ﺚ８񀀴ａﺃ冤ﶅ蠷涳坶灙貍ﷰ湿渆羂ﻬ擌渎뭕﷍񁿾񀂸꫙濼撪ﾝ껌７ﶗ끘灠沐񂥼ﴒﵱﴢ臐滀厦漓ら漞褳滳񃆫添ㆭﺐ񃑌望믵滍񁏉﹎񀊺潵񀛣񀀢񃥾ﶫﺉ澆嬳渚ꐍ淦ꓵ濒﷠䰙瀄ﳡ񂼚；貲溝񂙍﹏񂲝潶涕񃅢滌񃝥潤ꈵ潕ꯋ澴髝񀁍񃿙泮䕿湴񂿳񀀦叹滅垝ﶂ񂀞浻㮍漁牢漫񀲊漼箠ﴏ찀漛灣ﹾ쒞ﾕ񀚧񀀲ꊔ湄緯ｐ其潉꺗澞䏀澵厤漊񃨋񀀑䜟ﾗ뎣ﺾ滺꘯﵌鑳漇麍潣澺敄潒ﴂ洵潉垂񀁈ﬗ毷以Ｗ񁙌溜񃭼｢狌煮񂡅澠즫澅꒡ﻹ륖湵񀏸︩끯溛싕ﺃ񀃰溌ꛤ澍괁湄渪㪱湾轵ￏ붫洍㯣９䚊澢゜ﹽ꤭澱熴漄񀂑﹞澠聛溟㐪洣曢ﾑ컙ﻖ扢ﺯꃞﻯｻ靏﹠왧澝狜洫몈潑轗ﾢ񃥁ﴱ旒ﻥ码溆񃞄ﹽ񀀘숡漄똞渁愓涢񁮡澒뒚漀案澱뎜濌形潀囫﹈뗐濖񀥥潪񁀫滕䗀潋潔񃼟ﾴ渝濘񀓈澁澰񂢝ﾒ러ﾼ潳뾨ｙ烌ﻝ龜ｎ觛ﻘ񀬄񀂆ﾫﺬ｟滴贊湶񂝍ﾍ񀕝ￗ淬񀁭괞Ｗ񀥿漄񂜙滦溗啟ｈ񂯲񀀄񂇡湿䜘ﺑ쏱灂񃑟瀃쒸溛䀍ﺱ듁ﺨ漂񀛮潽񃤰濼ｨ漀溶쎎񀀉徴ｑ䥽湀蘖泦솗漇㧕︕뽤濱똛漀鬑潀񀋡１儼満񁣕澆颱瀵񀆔瀙諫񀀂졸ﾉ񁶬￙컧：鋺溻񃑪︯渁潕񀀦鴥滭肰渢忢ﷃ年︀񂴦澘玲澿靍滭񂹻￱䄺ﾫ淩￩뽆澷񂞀漿浃湿泘ﺫ普Ｃ㎵ﾘ񂽌滗騝潂淀＂񀗶潹񀄮ﺟ񃹼ﺖ벓漃񂅳溱񂒺Ｙ񀈚漷ꕾ漌쪡漸ﻫ㐇湚񂠧ﾭ瘁澮蒼渗꼞浊񂲞溁頞漨񃭄渁鮎񀀎䨵涵񀣸湄񂊖ￒ񂜒淌񁖛濋񀇖滿垥澝񃃷＼꜎漠籥漝﷊澁ﾃ񂈻溳񃀅񀀑秼︗㫅潠앢﷈ﻗ紙񀀑輠溏񃝵澊둤滄쩄滱喺ｱ񁗖񀁒윂ﻙꨁ澫񂍶Ｕ昪ﴸꍿｂ聾湪񂅸澪鏔（瞾溅庪漽筎潇剅Ｑ雍￩䯖漛蟹￭颕漊밫滖刺︟񁸄񀀾䰹潓꣄滞񃜛｜溏紀滌䫂澳뭣潀珳ﹾ鶕氺付澮񀒱潥矼潦놭澩蔟濉񀢡漠񀪼涽㊾漝񀐫ﺯ躂滐񂹇／㦎ｰ䲾ｎ찾ﻝ񃝴澟琥溘");
-
 use std::arch::x86_64::*; //python:del
 use std::mem::transmute; //python:del
-use std::ops;
+use std::ops; //python:del
 
-const fn pattern_table_sub(p: u32) -> f32 {
+const fn _pts(p: u32) -> f32 {
     match p {
         0 => 0f32,
         1 => 1f32,
@@ -17,15 +15,15 @@ const fn pattern_table(p: [u32; 10]) -> T10 {
     let mut i = 0;
     let mut buf = [0f32; 8];
     while i < 8 {
-        buf[i] = pattern_table_sub(p[i]);
+        buf[i] = _pts(p[i]);
         i += 1;
     }
     T10 {
         0: T8::new([
             buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7],
         ]),
-        1: pattern_table_sub(p[8]),
-        2: pattern_table_sub(p[9]),
+        1: _pts(p[8]),
+        2: _pts(p[9]),
     }
 }
 
@@ -310,7 +308,8 @@ pub struct Score {
 }
 
 impl Score {
-    fn load(data: &[f32]) -> Self {
+    #[target_feature(enable = "avx2")]
+    pub unsafe fn load(data: &[f32]) -> Self {
         let edge_model = Model10::load(&data);
         let corner_model = Model10::load(&data[231..]);
         let cross_model = Model8::load(&data[462..]);
@@ -339,7 +338,7 @@ impl Score {
             }
         }
     }
-    pub unsafe fn calc(&self, index: Index, cn: usize) -> f32 {
+    pub unsafe fn calc(&self, index: Index, cn: isize) -> f32 {
         let indexes = index.indexes();
         let mut score = 0f32;
         for i in 0..4 {
@@ -367,20 +366,13 @@ impl Index {
             ])
         }
     }
-    fn indexes(&self) -> [usize; 10] {
+    pub fn indexes(&self) -> [usize; 10] {
         unsafe {
             let v: [u16; 16] = transmute(self.0);
             let mut buf = [0usize; 10];
-            *buf.get_unchecked_mut(0) = *v.get_unchecked(1) as usize;
-            *buf.get_unchecked_mut(1) = *v.get_unchecked(2) as usize;
-            *buf.get_unchecked_mut(2) = *v.get_unchecked(3) as usize;
-            *buf.get_unchecked_mut(3) = *v.get_unchecked(5) as usize;
-            *buf.get_unchecked_mut(4) = *v.get_unchecked(6) as usize;
-            *buf.get_unchecked_mut(5) = *v.get_unchecked(7) as usize;
-            *buf.get_unchecked_mut(6) = *v.get_unchecked(9) as usize;
-            *buf.get_unchecked_mut(7) = *v.get_unchecked(10) as usize;
-            *buf.get_unchecked_mut(8) = *v.get_unchecked(0) as usize;
-            *buf.get_unchecked_mut(9) = *v.get_unchecked(4) as usize;
+            for (i, p) in [1, 2, 3, 5, 6, 7, 9, 10, 0, 4].iter().enumerate() {
+                *buf.get_unchecked_mut(i) = *v.get_unchecked(*p) as usize;
+            }
             buf
         }
     }
@@ -422,19 +414,7 @@ impl ops::AddAssign<Index> for Index {
     }
 }
 
-impl std::fmt::Display for Index {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let indexes = self.indexes();
-        write!(f, "[")?;
-        for i in 0..10 {
-            write!(f, "{},", indexes[i])?;
-        }
-        write!(f, "]")
-    }
-}
-
 const INDEXES:[[[u16;10];8];8] = include_data!(1280, "、　　ン、　　　、　　　　　〃　　　　　〃　　　〉　　　　　〉　　　〛　　　　　〛　　　　糣　　　　け　　　　㢋　　　　　　　　　け　　　　ン、　　　、　　　㢋　　　　け　　　　　　　　　ン　　　〃　㋙　　　㋙　　　　　㢋　　　　　　　　　䦡　　　　　　　　　糣　　　　䦡　　　　　　　　　ン　　　㋙　　　　　〃　　　　　　　け㢋　　　　　　　　糣䦡　　　　　　　　　　　　　〉　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　ン　㋙　　　㋙　　　　　〃　　　〉　　　　　　　〛糣　　　　　　　　䦡　　　　　　　　　　　　　　　　　　　　　　　　〛　　　　　　　　　　け　　　　　　　　　　　㢋　　　　　　　　　〉　　　〛　　　　　　　〉　　　〛　　　　　㢋　　　　　　　　　　　　　　　　　　　　　　　　　〛　　　　　　　　け　　　　　　　　　　　　䦡　　　　　　　　　〛　　　　糣　　　　　　〃　　　〉　　　　　㋙　　　㋙　　　　　　　　　　　〉　　　　　　　　　　　　　　　　　　　　　　　　　　　　ン　　糣　　　　䦡　　　　け　　　　㢋　　　　　　　　　　〃　　　　　　　　　ン　〃　　糣　　　　䦡　　　　䦡　　　　　　　　　㢋　　　　　　　　　㋙　　　㋙　　　　　　　　　ン　㋙　　　　　　　け　　　　　ン、　　　、　、　　　　　　　け　　　　け　　　　㢋　　　　〛　　　　糣　　　　〉　　　〛　　　　　〃　　　〉　　　　　　　　　〃　　　　ン、　　　、　㢋　");
-
 const fn index_table() -> [[Index; 256]; 8] {
     let bits = [1, 1 << 1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7];
     unsafe {
@@ -462,26 +442,4 @@ const fn index_table() -> [[Index; 256]; 8] {
         table
     }
 }
-const INDEX_TABLE: [[Index; 256]; 8] = index_table();
-
-pub fn temp() {
-    println!("=====score3=====");
-    let score = Score::load(&TESTDATA);
-    println!("{}", score.cn_w);
-    println!("{}", score.cn_b);
-    println!("edge:{}", score.edge[0]);
-    println!("{}", score.edge[59048]);
-    println!("corner:{}", score.corner[0]);
-    println!("{}", score.corner[59048]);
-    println!("cross{}", score.cross[0]);
-    println!("{}", score.cross[6560]);
-
-    unsafe {
-        let i1 = INDEX_TABLE[0][1];
-        println!("{}", i1);
-        let i2 = i1.x2();
-        println!("{}", i2);
-        let i3 = i2 + i1;
-        println!("{}", i3);
-    }
-}
+pub const INDEX_TABLE: [[Index; 256]; 8] = index_table();

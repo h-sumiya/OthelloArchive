@@ -103,14 +103,6 @@ fn get_right_edge(board: u64) -> usize {
 }
 
 impl Board {
-    pub fn count(&self) -> isize {
-        self.me.count_ones() as isize + self.opp.count_ones() as isize
-    }
-
-    pub fn remain(&self) -> usize {
-        64 - self.count() as usize
-    }
-
     pub fn kn(&self) -> isize {
         self.me.count_ones() as isize - self.opp.count_ones() as isize
     }
@@ -124,14 +116,6 @@ impl Board {
             return -1;
         } else {
             return 0;
-        }
-    }
-
-    pub fn cn(&self) -> isize {
-        unsafe {
-            let me = self.legal_moves().count_ones() as isize;
-            let opp = self.opp_legal_moves().count_ones() as isize;
-            me - opp
         }
     }
 
