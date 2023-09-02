@@ -31,7 +31,7 @@ def learn(id: int):
         num_workers=3
     )
 
-    model = OseroNetworks()
+    model = OseroNetworks.load(id)
     model.to(CUDA)
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.003)
@@ -57,4 +57,12 @@ def learn(id: int):
 
 
 if __name__ == "__main__":
-    learn(30)
+    import time
+    for i in range(43, 61):
+        if i == 30:
+            continue
+        start = time.time()
+        print("=" * 30)
+        print(f"learn {i}")
+        learn(i)
+        print(f"learn {i} time: {time.time() - start}")

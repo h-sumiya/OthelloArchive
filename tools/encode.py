@@ -1,55 +1,83 @@
 from dataclasses import dataclass
+import pyperclip
 
-head = """macro_rules! load_data {
-    ($name:ident,$size:expr,$val:expr) => {
-        const $name: [u8; $size] = {
-            const fn f() -> [u8; $size] {
-                let data = $val.as_bytes();
-                let mut v = [0; $size];
-                let mut i = 0;
-                while i < $size {
-                    let val = (data[i * 2] - 0xd0) * 64 + (data[i * 2 + 1] - 0x80);
-                    v[i] = val;
-                    i += 1;
-                }
-                v
-            }
-            f()
-        };
-    };
-}
-"""
 
-body = """load_data!({}, {}, "{}");"""
+def make_tabel():
+    table = {}
+    count = 0
+    for i in [0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xeb, 0xec, 0xee, 0xef]:
+        for j in range(0x80, 0xbf + 1):
+            for k in range(0x80, 0xbf + 1):
+                table[count] = bytes([i, j, k]).decode("utf-8")
+                count += 1
+    for j in range(0x80, 0xbf + 1):
+        for k in range(0x80, 0xbf + 1):
+            for l in range(0x80, 0xbf + 1):
+                table[count] = bytes([0xf1, j, k, l]).decode("utf-8")
+                if count == 0xFFFF:
+                    return table
+                count += 1
+
+
+HEADER = """const {}:{} = """
+BODY = """include_data!({}, "{}");"""
+TABLE = make_tabel()
+
+
+@dataclass
+class Header:
+    name: str
+    type: str
+    pub: bool = False
+
+    def encode(self):
+        data = HEADER.format(self.name, self.type)
+        if self.pub:
+            data = "pub " + data
+        return data
 
 
 @dataclass
 class RustData:
-    name: str
     value: bytes
+    header: Header = None
 
     def encode(self):
-        text = ""
-        for b in self.value:
-            c1 = 0xd0 + b // 64
-            c2 = 0x80 + b % 64
-            text += bytes([c1, c2]).decode("utf-8")
-        return body.format(
-            self.name,
-            len(self.value),
-            text
-        )
+        size = len(self.value)
+        value = list(self.value) + [0] * (size % 2)
+        res = ""
+        for i in range(0, size, 2):
+            res += TABLE[value[i] + value[i + 1] * 256]
+        if self.header:
+            return self.header.encode() + BODY.format(size, res)
+        return BODY.format(size, res)
 
 
 class RustBuilder:
     def __init__(self) -> None:
         self.datas: list[RustData] = []
 
-    def add(self, name: str, value: bytes):
-        self.datas.append(RustData(name, value))
+    def add(self, value: bytes, header: Header = None):
+        self.datas.append(RustData(value, header))
 
-    def build(self):
+    def build(self, copy: bool = True):
         text = ""
         for data in self.datas:
             text += data.encode() + "\n"
-        return head + text
+        if copy:
+            pyperclip.copy(text)
+        print("build success len:", len(text))
+        return text
+
+
+if __name__ == "__main__":
+    builder = RustBuilder()
+    data = []
+    for i in range(256):
+        for j in range(256):
+            data.append(i)
+            data.append(j)
+    builder.add(bytes(data))
+    builder.add(bytes([0]))
+    builder.add(bytes([0, 192]))
+    builder.build()

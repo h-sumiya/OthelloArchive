@@ -3,7 +3,26 @@ import torch
 from path import *
 
 
-class Network_10_type1(nn.Module):
+class Converter:
+    def convert(self, index=[0, 2, 4]):
+        lins = []
+        if index == False:
+            lins = [self.fc]
+        else:
+            lins = [self.fc[i] for i in index]
+        detas = []
+        for lin in lins:
+            for ws in lin.weight:
+                for w in ws:
+                    f = float(w)
+                    detas.append(f)
+            for b in lin.bias:
+                f = float(b)
+                detas.append(f)
+        return detas
+
+
+class Network_10_type1(nn.Module, Converter):
     def __init__(self):
         super(Network_10_type1, self).__init__()
         self.fc = nn.Sequential(
@@ -18,7 +37,7 @@ class Network_10_type1(nn.Module):
         return self.fc(x)
 
 
-class Network_10_type2(nn.Module):
+class Network_10_type2(nn.Module, Converter):
     def __init__(self):
         super(Network_10_type2, self).__init__()
         self.fc = nn.Sequential(
@@ -33,7 +52,7 @@ class Network_10_type2(nn.Module):
         return self.fc(x)
 
 
-class Network_8_type1(nn.Module):
+class Network_8_type1(nn.Module, Converter):
     def __init__(self):
         super(Network_8_type1, self).__init__()
         self.fc = nn.Sequential(
@@ -48,7 +67,7 @@ class Network_8_type1(nn.Module):
         return self.fc(x)
 
 
-class Network_8_type2(nn.Module):
+class Network_8_type2(nn.Module, Converter):
     def __init__(self):
         super(Network_8_type2, self).__init__()
         self.fc = nn.Sequential(
@@ -63,7 +82,7 @@ class Network_8_type2(nn.Module):
         return self.fc(x)
 
 
-class Network_1_type1(nn.Module):
+class Network_1_type1(nn.Module, Converter):
     def __init__(self):
         super(Network_1_type1, self).__init__()
         self.fc = nn.Sequential(
@@ -76,7 +95,7 @@ class Network_1_type1(nn.Module):
         return self.fc(x)
 
 
-class Network_1_type2(nn.Module):
+class Network_1_type2(nn.Module, Converter):
     def __init__(self):
         super(Network_1_type2, self).__init__()
         self.fc = nn.Linear(1, 1)
@@ -113,6 +132,8 @@ class OseroNetworks(nn.Module):
 
     def load(id: int) -> "OseroNetworks":
         path = ModelPath.id(id)
+        if not path.is_file():
+            return OseroNetworks()
         model = OseroNetworks()
         model.load_state_dict(torch.load(path))
         model.eval()

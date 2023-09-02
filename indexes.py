@@ -43,6 +43,8 @@ CROSSES = [[int(c.rotate(i)) for c in CROSS] for i in (0, 3)]
 
 if __name__ == "__main__":
     from pprint import pprint
+    from tools import *
+    import struct
     print("======EDGE=====")
     pprint(EDGES)
     print("======EDGE2=====")
@@ -51,3 +53,23 @@ if __name__ == "__main__":
     pprint(CORNERS)
     print("======CROSS=====")
     pprint(CROSSES)
+
+    FULL = EDGES2 + CORNERS + CROSSES
+    # [[[u16;10];8];8]
+    data = b""
+    for i in range(8):
+        for j in range(8):
+            id = i * 8 + j
+            for e in FULL:
+                if id in e:
+                    data += struct.pack("H", 3 ** e.index(id))
+                else:
+                    data += struct.pack("H", 0)
+    print(len(data))
+
+    rsb = RustBuilder()
+    rsb.add(data, Header(
+        "INDEXES",
+        f"[[[u16;10];8];8]"
+    ))
+    rsb.build()

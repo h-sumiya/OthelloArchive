@@ -86,6 +86,14 @@ class Color(Enum):
             return Color.Black
         else:
             return Color.White
+        
+    def codingame(self) -> str:
+        if self == Color.Null:
+            return "."
+        elif self == Color.Black:
+            return "1"
+        else:
+            return "2"
 
     @property
     def flag(self) -> int:
@@ -123,6 +131,9 @@ class Board:
                 text += str(self.data[y*8+x])
             text += "\n"
         return text
+    
+    def codingame(self) -> str:
+        return "".join([c.codingame() for c in self.data])
 
     def __add__(self, other: 'Board') -> 'Board':
         l = [
