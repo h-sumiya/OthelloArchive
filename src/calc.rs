@@ -1,153 +1,98 @@
 use crate::base::Board; //python:del
+use crate::bin::SCORE_DATA; //python:del
+use crate::pos::Pos; //python:del
+use crate::score::{Index, Score, INDEX_TABLE}; //python:del
+use std::mem::transmute; //python:del
 
-const fn calc_fs(i: u8, j: u8) -> i8 {
-    let mut socre = 0;
-    if i & j != 0 {
-        return 0;
-    }
-    if i | j == 255 {
-        socre = i.count_ones() as i8 - j.count_ones() as i8;
-    } else {
-        socre += i.leading_ones() as i8;
-        socre += i.trailing_ones() as i8;
-        socre -= j.leading_ones() as i8;
-        socre -= j.trailing_ones() as i8;
-    }
-    socre *= 2;
-    if i & 1 != 0 {
-        socre -= 1;
-    }
-    if i & 128 != 0 {
-        socre -= 1;
-    }
-    if j & 1 != 0 {
-        socre += 1;
-    }
-    if j & 128 != 0 {
-        socre += 1;
-    }
-    socre
-}
+pub static mut SCORE_TABLE: [Score; 61] = unsafe { transmute([1u8; 4880]) };
+pub static mut DEFALUT_SCORE: &'static Score = unsafe { &SCORE_TABLE[0] };
 
-const fn calc_fses() -> [[i8; 256]; 256] {
-    let mut table = [[0i8; 256]; 256];
-    let mut i = 0u8;
-    loop {
-        let mut j = 0u8;
-        loop {
-            let socre = calc_fs(i, j);
-            table[i as usize][j as usize] = socre;
-            if j == 255 {
-                break;
-            }
-            j += 1;
-        }
-        if i == 255 {
-            break;
-        }
-        i += 1;
-    }
-    table
-}
-
-const fn calc_point() -> [[isize; 256]; 8] {
-    let mut table = [[0; 256]; 8];
-    let data = [
-        [45, -11, 4, -1, -1, 4, -11, 45],
-        [-11, -16, -1, -3, -3, -1, -16, -11],
-        [4, -1, 2, -1, -1, 2, -1, 4],
-        [-1, -3, -1, 0, 0, -1, -3, -1],
-        [-1, -3, -1, 0, 0, -1, -3, -1],
-        [4, -1, 2, -1, -1, 2, -1, 4],
-        [-11, -16, -1, -3, -3, -1, -16, -11],
-        [45, -11, 4, -1, -1, 4, -11, 45],
+pub fn first_load() {
+    let locs: [usize; 61] = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 44, 44, 44, 44, 44, 44,
+        44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44,
     ];
-    let mut i = 0;
-    while i < 8 {
-        let mut j = 0;
-        while j < 256 {
-            let mut point = 0;
-            let mut k = 0;
-            while k < 8 {
-                if j & (1 << k) != 0 {
-                    point += data[i][k];
-                }
-                k += 1;
-            }
-            table[i][j] = point;
-            j += 1;
+    unsafe {
+        for i in 0..61 {
+            let loc = locs[i] * 617;
+            let mut s = Score::load(&SCORE_DATA[loc..]);
+            std::mem::swap(&mut SCORE_TABLE[i], &mut s);
+            std::mem::forget(s);
         }
-        i += 1;
     }
-    table
+    eprintln!("61 scores netwroks loaded"); //python:debug
 }
 
-const POINT_TABLE: [[isize; 256]; 8] = calc_point();
-pub const FS_TABLE: [[i8; 256]; 256] = calc_fses();
-
-//[参考]https://qiita.com/ysuzuk81/items/9ee9d0a295471bb6d1ef
-fn get_top_edge(board: u64) -> usize {
-    ((board & 0xFF00000000000000) >> 56) as usize
-}
-
-fn get_bottom_edge(board: u64) -> usize {
-    (board & 0x00000000000000FF) as usize
-}
-
-fn get_left_edge(board: u64) -> usize {
-    ((board & 0x8080808080808080) * 0x0002040810204081 >> 56) as usize
-}
-
-fn get_right_edge(board: u64) -> usize {
-    ((board & 0x0101010101010101) * 0x0102040810204080 >> 56) as usize
+pub fn set_default_score(index: usize) {
+    unsafe {
+        DEFALUT_SCORE = &SCORE_TABLE[index];
+    }
 }
 
 impl Board {
-    pub fn kn(&self) -> isize {
-        self.me.count_ones() as isize - self.opp.count_ones() as isize
+    pub fn count(&self) -> usize {
+        (self.me.count_ones() + self.opp.count_ones()) as usize
     }
 
-    pub fn win(&self) -> isize {
-        let me = self.me.count_ones() as isize;
-        let opp = self.opp.count_ones() as isize;
-        if me > opp {
-            return 1;
-        } else if me < opp {
-            return -1;
-        } else {
-            return 0;
-        }
+    pub fn remain(&self) -> usize {
+        64 - self.count()
     }
 
-    pub fn bp(&self) -> isize {
-        let mut points = 0;
+    pub fn prog(&self) -> usize {
+        self.count() - 4
+    }
+
+    pub fn cn(&self) -> isize {
         unsafe {
-            for (i, table) in POINT_TABLE.iter().rev().enumerate() {
-                let me_index = ((self.me >> (i * 8)) & 0x00000000000000FF) as usize;
-                points += *table.get_unchecked(me_index);
-                let opp_index = ((self.opp >> (i * 8)) & 0x00000000000000FF) as usize;
-                points -= *table.get_unchecked(opp_index);
-            }
+            let me = self.legal_moves().count_ones() as isize;
+            let opp = self.opp_legal_moves().count_ones() as isize;
+            me - opp
         }
-        points
     }
 
-    pub fn fs(&self) -> isize {
-        let mut score = 0i8;
-        unsafe {
-            score += *FS_TABLE
-                .get_unchecked(get_top_edge(self.me))
-                .get_unchecked(get_top_edge(self.opp));
-            score += *FS_TABLE
-                .get_unchecked(get_bottom_edge(self.me))
-                .get_unchecked(get_bottom_edge(self.opp));
-            score += *FS_TABLE
-                .get_unchecked(get_left_edge(self.me))
-                .get_unchecked(get_left_edge(self.opp));
-            score += *FS_TABLE
-                .get_unchecked(get_right_edge(self.me))
-                .get_unchecked(get_right_edge(self.opp));
+    #[target_feature(enable = "avx2")]
+    unsafe fn score_index(&self) -> Index {
+        let mut index: Index;
+        let opp_index: [u8; 8] = transmute(self.opp);
+        index = INDEX_TABLE[0][opp_index[0] as usize];
+        for i in 1..8 {
+            index += INDEX_TABLE[i][opp_index[i] as usize];
         }
-        score as isize
+        index = index.x2();
+        let me_index: [u8; 8] = transmute(self.me);
+        for i in 0..8 {
+            index += INDEX_TABLE[i][me_index[i] as usize];
+        }
+        index
+    }
+
+    #[target_feature(enable = "avx2")]
+    pub unsafe fn defalut_score(&self) -> f32 {
+        let index = self.score_index();
+        let cn = self.cn();
+        DEFALUT_SCORE.calc(index, cn)
+    }
+
+    #[target_feature(enable = "avx2")]
+    pub unsafe fn score(&self) -> f32 {
+        let index = self.score_index();
+        let cn = self.cn();
+        SCORE_TABLE[self.count() - 4].calc(index, cn)
+    }
+
+    pub fn kn(&self) -> i32 {
+        unsafe {
+            let me: i32 = transmute(self.me.count_ones());
+            let opp: i32 = transmute(self.opp.count_ones());
+            me - opp
+        }
+    }
+
+    #[target_feature(enable = "avx2")]
+    pub unsafe fn last_kn(&self, pos: Pos) -> i32 {
+        let lf = self.count_last(pos);
+        let me = self.me.count_ones();
+        ((1 + me + lf) as i32 - 32) * 2
     }
 }

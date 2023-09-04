@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "oserolab"
+name = "osero-ai"
 version = "0.1.0"

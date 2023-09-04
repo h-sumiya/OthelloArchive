@@ -106,6 +106,38 @@ impl Board {
 
     #[inline]
     #[target_feature(enable = "avx2")]
+    pub unsafe fn count_last(&self, pos: Pos) -> u32 {
+        let mut mask: __m256i;
+        let mut flip: __m256i;
+        let mut outflank: __m256i;
+        let mut eraser: __m256i;
+        let mut flip2: __m128i;
+
+        let i = pos.idx();
+        let pp = _mm256_set1_epi64x(transmute(self.me));
+        mask = PPMASK.1[i];
+        outflank = _mm256_and_si256(pp, mask);
+        eraser = _mm256_srlv_epi64(outflank, SHIFT1897);
+        eraser = _mm256_or_si256(eraser, outflank);
+        eraser = _mm256_or_si256(eraser, _mm256_srlv_epi64(eraser, MM1418));
+        flip = _mm256_andnot_si256(eraser, mask);
+        flip = _mm256_andnot_si256(_mm256_srlv_epi64(eraser, MM2836), flip);
+        flip = _mm256_andnot_si256(_mm256_cmpeq_epi64(flip, mask), flip);
+        mask = PPMASK.0[i];
+        outflank = _mm256_and_si256(pp, mask);
+        outflank = _mm256_and_si256(outflank, _mm256_sub_epi64(MM0000, outflank));
+        eraser = _mm256_sub_epi64(_mm256_cmpeq_epi64(outflank, MM0000), outflank);
+        flip = _mm256_or_si256(flip, _mm256_andnot_si256(eraser, mask));
+        flip2 = _mm_or_si128(
+            _mm256_castsi256_si128(flip),
+            _mm256_extracti128_si256(flip, 1),
+        );
+        flip2 = _mm_or_si128(flip2, _mm_shuffle_epi32(flip2, 0x4e));
+        _mm_cvtsi128_si64(flip2).count_ones() 
+    }
+
+    #[inline]
+    #[target_feature(enable = "avx2")]
     pub unsafe fn opp_legal_moves(&self) -> u64 {
         let pp = _mm256_broadcastq_epi64(_mm_cvtsi64_si128(transmute(self.opp)));
         let moo = _mm256_and_si256(

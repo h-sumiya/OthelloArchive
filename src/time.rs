@@ -16,7 +16,7 @@ impl TimeManager {
 
     pub fn lap(&mut self) -> Result<(), ()> {
         let elapsed = self.start.elapsed().as_millis();
-        eprintln!("elapsed: {}", elapsed);
+        eprintln!("elapsed: {}", elapsed); //python:debug
         let diff = elapsed - self.last;
         if elapsed + diff > LiMIT_TIME {
             return Err(());
@@ -24,5 +24,21 @@ impl TimeManager {
             self.last = elapsed;
             return Ok(());
         }
+    }
+
+    pub fn next(&mut self) -> Result<(), ()> {
+        let elapsed = self.start.elapsed().as_millis();
+        eprintln!("elapsed: {}", elapsed); //python:debug
+        self.last = elapsed;
+        if elapsed * 5 < LiMIT_TIME {
+            return Ok(());
+        } else {
+            return Err(());
+        }
+    }
+
+    pub fn finish(&self) {
+        let elapsed = self.start.elapsed().as_millis();
+        eprintln!("finish: {}", elapsed); //python:debug
     }
 }

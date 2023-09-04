@@ -8,6 +8,7 @@
 //python:replace {pos.rs}
 //python:replace {base.rs}
 //python:replace {read.rs}
+//python:replace {book.rs}
 //python:replace {mask.rs}
 //python:replace {score.rs}
 //python:replace {time.rs}
@@ -15,9 +16,10 @@
 //python:replace {ai.rs}
 
 fn main() {
-    first_load();
     let mut buf = String::new();
     let id = read_id(&mut buf);
+    first_load();
+    load_book();
     let mut board = Board::new();
     loop {
         for _ in 0..8 {
