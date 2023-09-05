@@ -7,9 +7,8 @@ mod mask;
 mod pos;
 mod score;
 
-
 #[wasm_bindgen]
-pub fn varsion() -> String {
+pub fn version() -> String {
     "0.1.0".to_string()
 }
 
@@ -21,8 +20,8 @@ pub fn ai(data: Vec<usize>, ai: usize) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn legal_moves(data: Vec<usize>) -> Vec<usize> {
-    let b = base::Board::new(data, 1);
+pub fn legal_moves(data: Vec<usize>, me: usize) -> Vec<usize> {
+    let b = base::Board::new(data, me);
     let mut res = vec![];
     let moves = b.legal_moves();
     for i in 0..64 {

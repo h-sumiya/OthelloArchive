@@ -1,23 +1,10 @@
-import wasm from "../../webai/Cargo.toml";
+import init, { version } from './lib/pkg'
 
-let app = null;
-export async function init() {
-    const exports = await wasm({
-        serverPath: "/build/assets/",
-    });
-    let varsion = exports.varsion();
-    console.log("ai version:", varsion);
-    app = exports
-}
-
-export function ai(data, color) {
-    return app.ai(data, color);
-}
-
-export function moves(data, color) {
-    return app.legal_moves(data, color);
-}
-
-export function flip(data, loc, me, opp) {
-    return app.put(data, loc, me, opp);
+let loaded = false;
+export async function main() {
+    if (loaded) return;
+    await init()
+    const result = version()
+    console.log(`othello ai web edition(${result}) is successfully loaded.`)
+    loaded = true;
 }

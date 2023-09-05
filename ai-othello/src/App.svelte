@@ -1,5 +1,19 @@
 <script>
-	import { init, ai, moves, flip } from "./ai.js";
+    import { main } from "./ai";
+    import Board from "./board/board.svelte";
+    let init = false;
+    (async () => {
+        if (!init) {
+            await main();
+            init = true;
+        }
+    })();
 </script>
 
-<div>hello</div>
+{#if !init}
+    <div class="loading">
+        <div class="spinner" />
+    </div>
+{:else}
+    <Board />
+{/if}
