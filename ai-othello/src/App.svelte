@@ -13,7 +13,7 @@
 
 {#if init} 
     {#await initialize}
-        <Spinner text="AIを読み込んでいます." />
+        <Spinner text="AIを読み込んでいます" />
     {:then}
         <Game />
     {/await}
