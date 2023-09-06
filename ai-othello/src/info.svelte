@@ -22,7 +22,7 @@
 </script>
 
 <div class="info" style:width="{size}px">
-    {label[0]}:{counts[0]} | {label[1]}:{counts[1]} | {msg}
+    {label[0]}: {counts[0]} | {label[1]}: {counts[1]} | {msg}
     {#if load}
         <Loading />
     {/if}

@@ -81,6 +81,7 @@
         cursor: pointer;
         padding: 3px 20px;
         position: relative;
+        font-size: 1.2em;
     }
 
     @media (hover: hover) {
