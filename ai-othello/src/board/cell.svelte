@@ -4,41 +4,52 @@
     export let index;
     let dispatch = createEventDispatcher();
     function click() {
-        dispatch("click", { index });
+        if (click_able) {
+            dispatch("click", { index });
+        }
     }
 
     export let type = "null";
     export let latest = false;
     export let suggest = false;
     export let input = false;
+    export let suggest_type = "null";
 
+    let animation = "";
     let before = null;
     $: if (type == "black") {
+        if (before == "white") {
+            animation = "white_to_black";
+        } else {
+            animation = "";
+        }
         before = "black";
     } else if (type == "white") {
+        if (before == "black") {
+            animation = "black_to_white";
+        } else {
+            animation = "";
+        }
         before = "white";
     } else {
+        animation = "";
         before = null;
     }
 
-    $: _type = suggest
-        ? type
-        : type == "black" || type == "white"
-        ? type
-        : "null";
-    $: click_able = (type == "legal_black" || type == "legal_white") && input;
+    $: click_able = suggest_type != "null" && input;
+    $: s_type = suggest ? `s_${suggest_type}` : "s_null";
 </script>
 
 {#if click_able}
     <div
-        class="cell {_type} clickable"
+        class="cell {type} clickable suggest {s_type}"
         class:latest
         on:click={click}
         role="button"
         tabindex="0"
     />
 {:else}
-    <div class="cell {_type} " class:latest />
+    <div class="cell {type} {animation} suggest {s_type}" class:latest />
 {/if}
 
 <style>
@@ -80,8 +91,7 @@
     .white::before {
         background-color: white;
     }
-    .legal_black::after,
-    .legal_white::after {
+    .suggest::after {
         position: absolute;
         content: "";
         display: block;
@@ -89,11 +99,15 @@
         height: 20%;
         margin: 40%;
         border-radius: 50%;
+        transition: 0.5s;
     }
-    .legal_black::after {
+    .s_null::after {
+        background-color: transparent;
+    }
+    .s_black::after {
         background-color: black;
     }
-    .legal_white::after {
+    .s_white::after {
         background-color: white;
     }
     .latest::after {
@@ -106,4 +120,48 @@
         border-radius: 50%;
         background-color: red;
     }
+    @keyframes black_to_white {
+        0% {
+            background-color: black;
+            transform: rotateY(0deg);
+        }
+        50% {
+            background-color: black;
+            transform: rotateY(90deg);
+        }
+        50.1% {
+            background-color: white;
+            transform: rotateY(90deg);
+        }
+        100% {
+            background-color: white;
+            transform: rotateY(180deg);
+        }
+    }
+    @keyframes white_to_black {
+        0% {
+            background-color: white;
+            transform: rotateY(0deg);
+        }
+        50% {
+            background-color: white;
+            transform: rotateY(90deg);
+        }
+        50.1% {
+            background-color: black;
+            transform: rotateY(90deg);
+        }
+        100% {
+            background-color: black;
+            transform: rotateY(180deg);
+        }
+    }
+    .black_to_white::before {
+        animation: black_to_white 0.5s;
+    }
+    .white_to_black::before {
+        animation: white_to_black 0.5s;
+    }
 </style>
+
+

@@ -2,32 +2,35 @@
     import { legal_moves } from "../lib/pkg/webai";
     import Cell from "./cell.svelte";
 
-    export let data = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ];
+    export let data;
     export let player = 1;
     export let latest = null;
     export let input = false;
     export let suggest = true;
+    export let size = 500;
 
     let cell_data;
+    const dcell = { type: "null", latest: false, suggest_type: "null" };
     $: {
         let result = [];
         let legal = legal_moves(data, player);
         for (let i = 0; i < data.length; i++) {
             if (data[i] == 0) {
                 if (legal.includes(i)) {
-                    let type = player == 1 ? "legal_black" : "legal_white";
-                    result.push({ type, latest: false });
+                    let suggest_type = player == 1 ? "black" : "white";
+                    result.push({
+                        ...dcell,
+                        type: "null",
+                        latest: false,
+                        suggest_type,
+                    });
                 } else {
-                    result.push({ type: "null", latest: false });
+                    result.push({ ...dcell, type: "null" });
                 }
             } else if (data[i] == 1) {
-                result.push({ type: "black", latest: false });
+                result.push({ ...dcell, type: "black" });
             } else if (data[i] == 2) {
-                result.push({ type: "white", latest: false });
+                result.push({ ...dcell, type: "white" });
             }
         }
         if (latest != null) {
@@ -37,7 +40,7 @@
     }
 </script>
 
-<div class="board">
+<div class="board" style:width="{size}px" style:height="{size}px">
     {#each { length: 8 } as _, y}
         <div class="row">
             {#each { length: 8 } as _, x}
@@ -56,8 +59,6 @@
 <style>
     .board {
         display: flex;
-        width: 500px;
-        height: 500px;
         flex-direction: column;
     }
 

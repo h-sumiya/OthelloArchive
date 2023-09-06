@@ -1,6 +1,7 @@
 <script>
-    import { main } from "./ai";
-    import Board from "./board/board.svelte";
+    import { main, initialize } from "./ai";
+    import Spinner from "./parts/spinner.svelte";
+    import Game from "./game.svelte";
     let init = false;
     (async () => {
         if (!init) {
@@ -10,10 +11,8 @@
     })();
 </script>
 
-{#if !init}
-    <div class="loading">
-        <div class="spinner" />
-    </div>
-{:else}
-    <Board />
-{/if}
+{#await initialize}
+    <Spinner text="AIを読み込んでいます." />
+{:then}
+    <Game />
+{/await}
