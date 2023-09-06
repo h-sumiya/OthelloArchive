@@ -105,7 +105,7 @@
 
 <style>
     .game {
-        width: 100vw;
+        width: 100%;
         position: relative;
         margin-top: 20px;
     }

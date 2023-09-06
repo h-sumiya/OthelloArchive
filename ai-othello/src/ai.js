@@ -4,7 +4,7 @@ import ai_worker from './ai.worker?worker';
 const worker = new ai_worker();
 export let initialize = new Promise((resolve, reject) => {
     worker.onmessage = (e) => {
-        resolve(e.data)
+        resolve()
     }
 });
 

@@ -64,4 +64,12 @@
     .white.select {
         background-color: white;
     }
+    .cover {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background-color: rgba(105, 105, 105, 0.5);
+    }
 </style>

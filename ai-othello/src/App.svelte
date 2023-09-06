@@ -11,8 +11,10 @@
     })();
 </script>
 
-{#await initialize}
-    <Spinner text="AIを読み込んでいます." />
-{:then}
-    <Game />
-{/await}
+{#if init} 
+    {#await initialize}
+        <Spinner text="AIを読み込んでいます." />
+    {:then}
+        <Game />
+    {/await}
+{/if}
