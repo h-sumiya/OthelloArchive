@@ -1,5 +1,5 @@
 <script>
-    import { legal_moves } from "../lib/pkg/webai";
+    import { legal_moves } from "../logic";
     import Cell from "./cell.svelte";
 
     export let data;

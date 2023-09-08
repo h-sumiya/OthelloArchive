@@ -1,24 +1,32 @@
 <script>
-    import BoardIcon from "./boardIcon.svelte";
+    import BitIcon from "./bitIcon.svelte";
+    import { onMount } from "svelte";
 
     class RandBoard {
         constructor() {
-            this.me = 0n;
-            this.op = 0n;
+            this.black = 0n;
+            this.white = 0n;
             for (let i = 0; i < 64; i++) {
-                if (Math.random() < 0.5) {
-                    this.me |= 1n << BigInt(i);
-                } else {
-                    this.op |= 1n << BigInt(i);
+                if (Math.random() < 1 / 3) {
+                    this.black |= 1n << BigInt(i);
+                } else if (Math.random() < 0.5) {
+                    this.white |= 1n << BigInt(i);
                 }
             }
         }
     }
-    let rand = new RandBoard();
-    let mask = 0x7E7E7E7E7E7E7E7En & rand.me;
+
+    let data = new RandBoard();
+
+    onMount(() => {
+        let id = setInterval(() => {
+            data.black = 0x7f7f7f7f7f7f7fn & (data.black >> 9n);
+            if (data.black === 0n) {
+                data = new RandBoard();
+            }
+        }, 1000);
+        return () => clearInterval(id);
+    });
 </script>
 
-
-
-
-
+<BitIcon n={data.black} color={1} />

@@ -60,7 +60,7 @@
                 temp = Math.floor(Math.random() * Books.length);
             }
             index = temp;
-        }, 300);
+        }, 600);
         return () => clearInterval(id);
     });
 </script>

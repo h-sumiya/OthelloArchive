@@ -3,7 +3,7 @@
     import Board from "./board/board.svelte";
     import Info from "./info.svelte";
     import { default_data } from "./store";
-    import { legal_moves, put } from "./lib/pkg/webai";
+    import { flip, have_legal_moves } from "./logic";
     import { ai } from "./ai";
 
     let size = 500;
@@ -40,16 +40,14 @@
     async function ai_turn() {
         let index = await ai(data, next);
         latest = index;
-        data = put(data, index, next, 3 - next); // temp
+        data = flip(data, index, next);
     }
 
     function legal() {
-        let legal = legal_moves(data, next);
-        return legal.length != 0;
+        return have_legal_moves(data, next);
     }
     function opp_legal() {
-        let legal = legal_moves(data, 3 - next);
-        return legal.length != 0;
+        return have_legal_moves(data, 3 - next);
     }
 
     let useing = false;
@@ -60,7 +58,7 @@
         useing = true;
         let index = e.detail.index;
         latest = index;
-        data = put(data, index, next, 3 - next); // temp
+        data = flip(data, index, next);
         next = 3 - next;
         while (legal()) {
             await ai_turn();

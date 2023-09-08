@@ -1,9 +1,8 @@
-
 const moves = [
     [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]
 ];
 
-function inrange(x, y) {
+function in_range(x, y) {
     if (!(0 <= x && x < 8)) {
         return false
     } else if (!(0 <= y && y < 8)) {
@@ -12,46 +11,47 @@ function inrange(x, y) {
         return true
     }
 }
-export function filp(date, pos, color) {
-    let filps = [];
+
+export function flip(data, pos, color) {
+    let flips = [];
     let oppcolor = 3 - color;
     let x = pos % 8;
     let y = Math.floor(pos / 8);
-    if (date[pos] !== 0) {
+    if (data[pos] !== 0) {
         throw 'すでに石が置かれていました';
     }
     for (let i = 0; i < 8; i++) {
         let move_x = moves[i][0];
         let move_y = moves[i][1];
-        let tmpfilps = [];
+        let tmpflips = [];
         let next_x = x + move_x;
         let next_y = y + move_y;
-        while (inrange(next_x, next_y) && date[next_y * 8 + next_x] == oppcolor) {
-            tmpfilps.push(next_y * 8 + next_x);
+        while (in_range(next_x, next_y) && data[next_y * 8 + next_x] == oppcolor) {
+            tmpflips.push(next_y * 8 + next_x);
             next_x += move_x;
             next_y += move_y;
 
-        } if (inrange(next_x, next_y) && date[next_y * 8 + next_x] == color) {
-            filps = [...filps, ...tmpfilps]
+        } if (in_range(next_x, next_y) && data[next_y * 8 + next_x] == color) {
+            flips = [...flips, ...tmpflips]
         }
 
     }
-    if (filps.length == 0) {
+    if (flips.length == 0) {
         throw '置けません';
     }
-    let res = [...date];
-    for (let i = 0; i < filps.length; i++) {
-        res[filps[i]] = color
+    let res = [...data];
+    for (let i = 0; i < flips.length; i++) {
+        res[flips[i]] = color
     }
     res[pos] = color;
     return res;
 }
 
-export function check(date, pos, color) {
+export function check(data, pos, color) {
     let oppcolor = 3 - color;
     let x = pos % 8;
     let y = Math.floor(pos / 8);
-    if (date[pos] !== 0) {
+    if (data[pos] !== 0) {
         return false;
     }
     for (let i = 0; i < 8; i++) {
@@ -60,12 +60,12 @@ export function check(date, pos, color) {
         let next_x = x + move_x;
         let next_y = y + move_y;
         let flag = false;
-        while (inrange(next_x, next_y) && date[next_y * 8 + next_x] == oppcolor) {
+        while (in_range(next_x, next_y) && data[next_y * 8 + next_x] == oppcolor) {
             flag = true;
             next_x += move_x;
             next_y += move_y;
 
-        } if (inrange(next_x, next_y) && date[next_y * 8 + next_x] == color && flag) {
+        } if (in_range(next_x, next_y) && data[next_y * 8 + next_x] == color && flag) {
             return true;
         }
 
@@ -73,22 +73,21 @@ export function check(date, pos, color) {
     return false
 }
 
-export function legal_moves(date, color) {
+export function legal_moves(data, color) {
     let moves = [];
     for (let i = 0; i < 64; i++) {
-        if (check(date, i, color)) {
+        if (check(data, i, color)) {
             moves.push(i);
         }
     }
     return moves
 }
 
-export function have_legal_moves(date, color) {
+export function have_legal_moves(data, color) {
     for (let i = 0; i < 64; i++) {
-        if (check(date, i, color)) {
+        if (check(data, i, color)) {
             return true;
         }
     }
     return false;
-
 }

@@ -2,8 +2,8 @@ import init, { ai, version } from './lib/pkg';
 
 
 let loaded = (async () => {
-    await init()
-    const result = version()
+    await init();
+    const result = version();
     console.log(`othello ai web edition(${result}) is successfully loaded.`);
     self.postMessage({ loaded: true })
 })();
