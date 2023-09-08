@@ -1,0 +1,14 @@
+{
+  "name": "webai",
+  "version": "0.1.0",
+  "files": [
+    "webai_bg.wasm",
+    "webai.js",
+    "webai.d.ts"
+  ],
+  "module": "webai.js",
+  "types": "webai.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

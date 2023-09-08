@@ -31,21 +31,15 @@
     </svg>
     {#if check !== null}
         {#key check}
-            <svg viewBox="0 0 {w} 100" class="line">
-                <path
-                    d="M{start},0 L{len * check + half},100"
-                    stroke="green"
-                    stroke-width="3"
-                    class="line"
-                    ><animate
-                        attributeName="d"
-                        dur="0.5s"
-                        from="M{start},0 L{start},0"
-                        to="M{start},0 L{len * check + half},100"
-                        fill="freeze"
+            <div class="line_box">
+                <svg viewBox="0 0 {w} 100" class="line">
+                    <path
+                        d="M{start},0 L{len * check + half},100"
+                        stroke="green"
+                        stroke-width="3"
                     />
-                </path>
-            </svg>
+                </svg>
+            </div>
         {/key}
     {/if}
 </div>
@@ -65,5 +59,25 @@
         position: absolute;
         top: 0;
         left: 0;
+    }
+
+    @keyframes line {
+        0% {
+            height: 0%;
+        }
+        100% {
+            height: 100%;
+        }
+    }
+
+    .line_box {
+        position: absolute;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -900;
+        animation: line 0.5s linear;
     }
 </style>
