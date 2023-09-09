@@ -16,4 +16,8 @@ impl base::Board {
             (me, opp)
         }
     }
+
+    pub fn turn(&self) -> usize {
+        (self.count() - 4) as usize
+    }
 }

@@ -60,6 +60,10 @@ class Board:
             self._pydata = _decode(self._data)
         return self._pydata
 
+    def _init_data(self) -> None:
+        if self._pydata is None:
+            self._pydata = _decode(self._data)
+
     def __getitem__(self, pos: Pos) -> int:
         if self._pydata is None:
             return _get(self._data, int(pos))
@@ -75,8 +79,11 @@ class Board:
     def opp_legal_moves(self) -> list[Pos]:
         return [Pos(i) for i in _opp_legal_moves(self._data)]
 
-    def put(self, pos: Pos) -> "Board":
-        return Board(_put(self._data, int(pos)))
+    def put(self, pos: Pos, color=1) -> "Board":
+        if color == 1:
+            return Board(_put(self._data, int(pos)))
+        else:
+            return Board(_put_opp(self._data, int(pos)))
 
     def load_stream(stream: str) -> Generator["Board", None, None]:
         res = _load_kif(stream)
@@ -100,3 +107,15 @@ class Board:
 
     def save(self) -> bytes:
         return self._data
+
+    def __str__(self) -> str:
+        self._init_data()
+        res = ""
+        for y in range(8):
+            for x in range(8):
+                res += str(self.data[x + y * 8])
+            res += "\n"
+        return res
+
+    def edax(self) -> float:
+        return _edax(self._data)

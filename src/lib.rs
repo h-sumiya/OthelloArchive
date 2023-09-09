@@ -1,13 +1,19 @@
 mod base;
 mod calc;
+mod cell_name;
 mod connect;
 mod display;
 mod kif;
 mod mask;
+mod pack;
 mod pos;
+mod score;
 use std::borrow::Cow;
 
+use once_cell::sync::Lazy;
 use pyo3::prelude::*;
+
+static EVAL: Lazy<score::EvalData> = Lazy::new(|| score::EvalData::load());
 
 #[pyfunction]
 fn _load_kif(data: &str) -> PyResult<Cow<[u8]>> {
@@ -37,6 +43,15 @@ fn _put(data: &[u8], p: usize) -> PyResult<Cow<[u8]>> {
     let p = pos::Pos::from_py(p);
     let next = unsafe { b.put(p) };
     let res = next.pass().pysave();
+    Ok(res.to_vec().into())
+}
+
+#[pyfunction]
+fn _put_opp(data: &[u8], p: usize) -> PyResult<Cow<[u8]>> {
+    let b = base::Board::pyload(data).pass();
+    let p = pos::Pos::from_py(p);
+    let next = unsafe { b.put(p) };
+    let res = next.pysave();
     Ok(res.to_vec().into())
 }
 
@@ -103,6 +118,13 @@ fn _cns(data: &[u8]) -> PyResult<(u32, u32)> {
     Ok(b.cns())
 }
 
+#[pyfunction]
+fn _edax(data: &[u8]) -> PyResult<f64> {
+    let b = base::Board::pyload(data);
+    let res = EVAL.evaluate(&b);
+    Ok(res)
+}
+
 #[pymodule]
 fn pyothello(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(_load_kif, m)?)?;
@@ -117,5 +139,7 @@ fn pyothello(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(_count, m)?)?;
     m.add_function(wrap_pyfunction!(_counts, m)?)?;
     m.add_function(wrap_pyfunction!(_cns, m)?)?;
+    m.add_function(wrap_pyfunction!(_edax, m)?)?;
+    m.add_function(wrap_pyfunction!(_put_opp, m)?)?;
     Ok(())
 }
