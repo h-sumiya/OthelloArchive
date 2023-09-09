@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from .pyothello import *
+from typing import Generator
 
 X_LABELS = "abcdefgh"
 Y_LABELS = "12345678"
@@ -50,6 +51,9 @@ class Board:
     def default() -> "Board":
         return Board(_make())
 
+    def load(data: list[int]) -> "Board":
+        return Board(_mk_data(data))
+
     @property
     def data(self) -> list[int]:
         if self._pydata is None:
@@ -74,7 +78,25 @@ class Board:
     def put(self, pos: Pos) -> "Board":
         return Board(_put(self._data, int(pos)))
 
-    def load_stream(stream: str):
+    def load_stream(stream: str) -> Generator["Board", None, None]:
         res = _load_kif(stream)
         for pos in range(0, len(res), 16):
             yield Board(res[pos:pos+16])
+
+    @property
+    def count(self) -> int:
+        return _count(self._data)
+
+    @property
+    def counts(self) -> tuple[int, int]:
+        return _counts(self._data)
+
+    @property
+    def cns(self) -> tuple[int, int]:
+        return _cns(self._data)
+
+    def __int__(self) -> int:
+        return self.count - 4
+
+    def save(self) -> bytes:
+        return self._data

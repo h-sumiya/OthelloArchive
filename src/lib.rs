@@ -25,8 +25,8 @@ fn _load_kif(data: &str) -> PyResult<Cow<[u8]>> {
 }
 
 #[pyfunction]
-fn _mk_data(data: &[u8]) -> PyResult<Cow<[u8]>> {
-    let b = base::Board::from_pydata(data);
+fn _mk_data<'a>(data: Vec<u8>) -> PyResult<Cow<'a, [u8]>> {
+    let b = base::Board::from_pydata(data.as_slice());
     let res = b.pysave();
     Ok(res.to_vec().into())
 }
