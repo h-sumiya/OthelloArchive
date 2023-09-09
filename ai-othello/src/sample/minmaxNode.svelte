@@ -81,6 +81,7 @@
         justify-content: space-around;
         margin: 1em 0;
         margin: 0;
+        overflow: visible;
     }
 
     .value {
