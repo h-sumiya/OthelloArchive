@@ -7,6 +7,10 @@ Python用オセロツールキット
 - legal_moves: 500,000回/秒
 - edax: 160,000回/秒
 
+## ビルド
+`maturin build --release`
+`pip install target/wheels/pyothello-xxx.whl`
+
 ## 使い方
 
 ```python
