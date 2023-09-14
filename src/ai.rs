@@ -1,11 +1,12 @@
 use crate::book::KILLER; //python:del
-use crate::calc::set_default_score; //python:del
+use crate::calc::set_default; //python:del
 use crate::pos::Pos; //python:del
 use crate::time::TimeManager; //python:del
 use crate::Board; //python:del
 const MIN: f32 = -10000.0;
 
 struct SortedPos(Vec<(f32, Pos)>);
+static mut TIMER: TimeManager = TimeManager::temp();
 
 impl SortedPos {
     fn sort(&mut self) {
@@ -45,7 +46,13 @@ impl Board {
         let mut scores = vec![];
         let mut b = MIN;
         let prog = self.prog().max(0);
-        set_default_score(prog + 3);
+        if prog < 22 {
+            set_default(0);
+        } else if prog < 37 {
+            set_default(1);
+        } else {
+            set_default(2);
+        }
         for i in 0..64 {
             let pos = 1 << i;
             if moves & pos != 0 {
@@ -60,13 +67,20 @@ impl Board {
         res
     }
 
-    fn score_ab(&self, mut depth: usize, tm: &mut TimeManager) -> Pos {
+    fn score_ab(&self, mut depth: usize) -> Pos {
         let mut scores = self.sorted_pos();
         loop {
             let mut b = MIN;
             let mut max_pos = scores.0[0].1;
-            set_default_score(self.prog().max(0) + depth);
-            for (tsc, pos) in scores.0.iter_mut() {
+            let prog = self.prog().max(0) + depth;
+            if prog < 25 {
+                set_default(0);
+            } else if prog < 40 {
+                set_default(1);
+            } else {
+                set_default(2);
+            }
+            for (i, (tsc, pos)) in scores.0.iter_mut().enumerate() {
                 let board = unsafe { self.put(*pos) };
                 let score = unsafe { -board.score_ab_node(depth - 1, MIN, -b) };
                 *tsc = score;
@@ -74,11 +88,12 @@ impl Board {
                     b = score;
                     max_pos = *pos;
                 }
-                if tm.lap().is_err() {
+                if unsafe { TIMER.lap().is_err() } {
+                    eprintln!("break depth: {}({}/{})", depth, i, scores.0.len()); //python:debug
                     return max_pos;
                 }
             }
-            if tm.next().is_err() {
+            if unsafe { TIMER.next().is_err() } {
                 return max_pos;
             }
             scores.sort();
@@ -94,7 +109,7 @@ impl Board {
         if moves == 0 {
             moves = unsafe { self.opp_legal_moves() };
             if moves == 0 {
-                return (self.kn() * 1000 ) as f32;
+                return (self.kn() * 1000) as f32;
             }
             return -self.pass().score_ab_node(depth - 1, -b, -a);
         }
@@ -108,12 +123,18 @@ impl Board {
                 if a >= b {
                     return a;
                 }
+                if depth > 5 {
+                    if unsafe { TIMER.check().is_err() } {
+                        eprintln!("break score node"); //python:debug
+                        return a;
+                    }
+                }
             }
         }
         a
     }
 
-    pub fn win_ab(&self, tm: &mut TimeManager) -> Pos {
+    pub fn win_ab(&self) -> Pos {
         let depth = 64 - self.count();
         let sorted = self.sorted_pos();
         let mut max_pos = sorted.0[0].1;
@@ -127,7 +148,8 @@ impl Board {
                 max_pos = pos;
                 max_score = Win::Draw;
             }
-            if tm.lap().is_err() {
+            if unsafe { TIMER.lap() }.is_err() {
+                eprintln!("break win"); //python:debug
                 return max_pos;
             }
         }
@@ -175,7 +197,7 @@ impl Board {
         score
     }
 
-    pub fn kn_ab(&self, tm: &mut TimeManager) -> Pos {
+    pub fn kn_ab(&self) -> Pos {
         let sorted = self.sorted_pos();
         let mut max_pos = sorted.0[0].1;
         let mut max_score = -10000;
@@ -187,7 +209,8 @@ impl Board {
                 max_pos = pos;
                 max_score = res;
             }
-            if tm.lap().is_err() {
+            if unsafe { TIMER.lap() }.is_err() {
+                eprintln!("break kn"); //python:debug
                 return max_pos;
             }
         }
@@ -275,28 +298,27 @@ impl Board {
     }
 
     pub fn ai(&self) -> Pos {
-        eprintln!("======ai2================="); //python:debug
-        eprintln!("score: {}", unsafe { self.defalut_score() }); //python:debug
+        eprintln!("score: {}", unsafe { self.score() }); //python:debug
         let remain = self.remain();
-        let mut tm = TimeManager::new();
+        unsafe { TIMER.start() };
         let pos;
         if let Some(p) = unsafe { KILLER.get(&(self.me, self.opp)) } {
-            eprintln!("mode killer"); //python:debug
+            eprintln!("mode killer");
             pos = *p;
         } else if remain <= 5 {
-            eprintln!("mode simple kn"); //python:debug
+            eprintln!("mode simple kn");
             pos = self.simple_kn_ab();
         } else if remain <= 13 {
-            eprintln!("mode kn"); //python:debug
-            pos = self.kn_ab(&mut tm);
+            eprintln!("mode kn");
+            pos = self.kn_ab();
         } else if remain <= 15 {
-            eprintln!("mode win"); //python:debug
-            pos = self.win_ab(&mut tm);
+            eprintln!("mode win");
+            pos = self.win_ab();
         } else {
-            eprintln!("mode socre"); //python:debug
-            pos = self.score_ab(7, &mut tm);
+            eprintln!("mode socre");
+            pos = self.score_ab(6);
         }
-        tm.finish(); //python:debug
+        unsafe { TIMER.finish() };
         pos
     }
 }

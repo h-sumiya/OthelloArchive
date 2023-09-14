@@ -10,6 +10,9 @@
 //python:replace {read.rs}
 //python:replace {book.rs}
 //python:replace {mask.rs}
+//python:replace {edge8.rs}
+//python:replace {models.rs}
+//python:replace {index.rs}
 //python:replace {score.rs}
 //python:replace {time.rs}
 //python:replace {calc.rs}
@@ -18,7 +21,7 @@
 fn main() {
     let mut buf = String::new();
     let id = read_id(&mut buf);
-    first_load();
+    init_score();
     load_book();
     let mut board = Board::new();
     loop {

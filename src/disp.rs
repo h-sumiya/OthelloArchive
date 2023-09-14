@@ -1,19 +1,7 @@
 use crate::base::Board;
 use crate::mask::POSES;
 use crate::pos::{Pos, LABEL_Y};
-use crate::score::Index;
 use std::fmt;
-
-impl fmt::Display for Index {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let indexes = self.indexes();
-        write!(f, "[")?;
-        for i in 0..10 {
-            write!(f, "{},", indexes[i])?;
-        }
-        write!(f, "]")
-    }
-}
 
 impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
