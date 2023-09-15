@@ -50,13 +50,13 @@ impl Board {
         for _ in 0..5 {
             buf |= mask & (buf << 1);
         }
-        let mut moves = blank & (buf << 1);
+        let mut moves = buf << 1;
 
         buf = mask & (self.me >> 1);
         for _ in 0..5 {
             buf |= mask & (buf >> 1);
         }
-        moves |= blank & (buf >> 1);
+        moves |= buf >> 1;
 
         mask = self.opp & VERTICAL_MASK;
 
@@ -64,13 +64,13 @@ impl Board {
         for _ in 0..5 {
             buf |= mask & (buf << 8);
         }
-        moves |= blank & (buf << 8);
+        moves |= buf << 8;
 
         buf = mask & (self.me >> 8);
         for _ in 0..5 {
             buf |= mask & (buf >> 8);
         }
-        moves |= blank & (buf >> 8);
+        moves |= buf >> 8;
 
         mask = self.opp & DIAGONAL_MASK;
 
@@ -78,27 +78,27 @@ impl Board {
         for _ in 0..5 {
             buf |= mask & (buf << 7);
         }
-        moves |= blank & (buf << 7);
+        moves |= buf << 7;
 
         buf = mask & (self.me >> 7);
         for _ in 0..5 {
             buf |= mask & (buf >> 7);
         }
-        moves |= blank & (buf >> 7);
+        moves |= buf >> 7;
 
         buf = mask & (self.me << 9);
         for _ in 0..5 {
             buf |= mask & (buf << 9);
         }
-        moves |= blank & (buf << 9);
+        moves |= buf << 9;
 
         buf = mask & (self.me >> 9);
         for _ in 0..5 {
             buf |= mask & (buf >> 9);
         }
-        moves |= blank & (buf >> 9);
+        moves |= buf >> 9;
 
-        moves
+        moves & blank
     }
 
     pub fn opp_legal_moves(&self) -> u64 {
@@ -109,13 +109,13 @@ impl Board {
         for _ in 0..5 {
             buf |= mask & (buf << 1);
         }
-        let mut moves = blank & (buf << 1);
+        let mut moves = buf << 1;
 
         buf = mask & (self.opp >> 1);
         for _ in 0..5 {
             buf |= mask & (buf >> 1);
         }
-        moves |= blank & (buf >> 1);
+        moves |= buf >> 1;
 
         mask = self.me & VERTICAL_MASK;
 
@@ -123,13 +123,13 @@ impl Board {
         for _ in 0..5 {
             buf |= mask & (buf << 8);
         }
-        moves |= blank & (buf << 8);
+        moves |= buf << 8;
 
         buf = mask & (self.opp >> 8);
         for _ in 0..5 {
             buf |= mask & (buf >> 8);
         }
-        moves |= blank & (buf >> 8);
+        moves |= buf >> 8;
 
         mask = self.me & DIAGONAL_MASK;
 
@@ -137,27 +137,27 @@ impl Board {
         for _ in 0..5 {
             buf |= mask & (buf << 7);
         }
-        moves |= blank & (buf << 7);
+        moves |= buf << 7;
 
         buf = mask & (self.opp >> 7);
         for _ in 0..5 {
             buf |= mask & (buf >> 7);
         }
-        moves |= blank & (buf >> 7);
+        moves |= buf >> 7;
 
         buf = mask & (self.opp << 9);
         for _ in 0..5 {
             buf |= mask & (buf << 9);
         }
-        moves |= blank & (buf << 9);
+        moves |= buf << 9;
 
         buf = mask & (self.opp >> 9);
         for _ in 0..5 {
             buf |= mask & (buf >> 9);
         }
-        moves |= blank & (buf >> 9);
+        moves |= buf >> 9;
 
-        moves
+        moves & blank
     }
 
     pub fn put(&self, pos: Pos) -> Self {

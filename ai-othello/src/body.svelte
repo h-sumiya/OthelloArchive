@@ -24,7 +24,7 @@
             移植前のオセロAIは<a
                 href="https://www.codingame.com/multiplayer/bot-programming/othello-1"
                 >オセロAIの大会</a
-            >に提出し最高で18位の成績を残しています。
+            >に提出し最高で16位(学生4位)の成績を残しています。
         </p>
     </div>
     <Title>サイトの仕組み</Title>
@@ -149,7 +149,7 @@
     .body {
         width: 100%;
         max-width: 1200px;
-        margin: 100px auto 200px auto;
+        margin: 100px auto 150px auto;
     }
 
     p {

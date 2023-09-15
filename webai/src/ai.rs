@@ -123,10 +123,10 @@ impl Board {
         let remain = 60 - self.count;
         if let Some(p) = unsafe { KILLER.get(&(self.me, self.opp)) } {
             pos = *p;
-        } else if remain <= 14 {
+        } else if remain <= 16 {
             pos = self.kn_ab();
         } else {
-            pos = self.score_ab(7);
+            pos = self.score_ab(8);
         }
         pos
     }

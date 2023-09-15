@@ -54,4 +54,29 @@ mod tests {
         let b = super::base::Board::new(data, 1);
         assert_eq!(!b.legal_moves() & (1 << pos), 0);
     }
+    #[test]
+    fn score() {
+        let b = super::base::Board::default();
+        let score = b.score();
+        println!("{}", score);
+    }
+    #[test]
+    fn book() {
+        unsafe {
+            for key in super::book::KILLER.keys() {
+                let b = super::base::Board {
+                    me: key.0,
+                    opp: key.1,
+                    count: 0,
+                };
+                let val = super::book::KILLER.get(key).unwrap();
+                println!(
+                    "new Book({:#016x}n,{:#016x}n,\"{}\"),", 
+                    b.me,
+                    b.opp, 
+                    val
+                );
+            }
+        };
+    }
 }

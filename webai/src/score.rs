@@ -33,7 +33,7 @@ macro_rules! linear_middle {
                 let mut output = [0.0; $output];
                 for i in 0..$output {
                     for j in 0..$input {
-                        output[i] += input[i] * self.weights[i][j];
+                        output[i] += input[j] * self.weights[i][j];
                     }
                     output[i] += self.bias[i];
                     if output[i] < 0.0 {
@@ -169,25 +169,43 @@ impl Score {
             edge.set_len(59049);
             corner.set_len(59049);
             cross.set_len(6561);
-            let mut inputbuf = [0.0f32; 10];
-            for (index, input) in pattern
-                .into_iter()
-                .combinations_with_replacement(10)
-                .enumerate()
+            for (index, input) in itertools::iproduct!(
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter()
+            )
+            .enumerate()
             {
-                inputbuf.copy_from_slice(input.as_slice());
-                *edge.get_unchecked_mut(index) = model.edge.calc(&inputbuf);
-                *corner.get_unchecked_mut(index) = model.corner.calc(&inputbuf);
+                let input = [
+                    *input.9, *input.8, *input.7, *input.6, *input.5, *input.4, *input.3, *input.2,
+                    *input.1, *input.0,
+                ];
+                *edge.get_unchecked_mut(index) = model.edge.calc(&input);
+                *corner.get_unchecked_mut(index) = model.corner.calc(&input);
             }
-            let pattern = vec![0.0f32, 1.0, -1.0];
-            let mut inputbuf = [0.0f32; 8];
-            for (index, input) in pattern
-                .into_iter()
-                .combinations_with_replacement(8)
-                .enumerate()
+            for (index, input) in itertools::iproduct!(
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter(),
+                pattern.iter()
+            )
+            .enumerate()
             {
-                inputbuf.copy_from_slice(input.as_slice());
-                *cross.get_unchecked_mut(index) = model.cross.calc(&inputbuf);
+                let input = [
+                    *input.7, *input.6, *input.5, *input.4, *input.3, *input.2, *input.1, *input.0,
+                ];
+                *cross.get_unchecked_mut(index) = model.cross.calc(&input);
             }
             Self {
                 edge,
@@ -218,12 +236,12 @@ impl Score {
     }
 }
 
-const DATA: [f32; 27765] = unsafe { transmute(*include_bytes!("ai.bin")) };
+const DATA: [f32; 26531] = unsafe { transmute(*include_bytes!("ai.bin")) };
 pub static SCORE_TABLE: Lazy<Vec<Score>> = Lazy::new(|| {
     let locs: [usize; 61] = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
         18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-        41, 42, 43, 44, 44, 44, 44, 44, 44, 44, 44,
+        41, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42,
     ];
     let mut scores: Vec<Score> = vec![];
     for i in 1..61 {
