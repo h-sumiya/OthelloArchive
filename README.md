@@ -1,6 +1,6 @@
 # オセロAI開発のアーカイブ
 
-[Codingame]()
+[Codingame](https://www.codingame.com/multiplayer/bot-programming/othello-1)
 
 ## Files
 
